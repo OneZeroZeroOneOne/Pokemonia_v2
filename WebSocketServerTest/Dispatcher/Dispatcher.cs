@@ -1,6 +1,6 @@
 ﻿using Pokemonia.Dal.Enumaration;
 using Pokemonia.Dal.Models;
-using Pokemonia.WebServer.Utils;
+using Pokemonia.Utils;
 using System.Net.Sockets;
 
 namespace Pokemonia.WebServer

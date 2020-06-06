@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Pokemonia.Dal.Enumaration;
 
-namespace Pokemonia.WebServer.Utils
+namespace Pokemonia.Utils
 {
     public class ByteMessageFactory
     {
@@ -12,7 +12,7 @@ namespace Pokemonia.WebServer.Utils
         {
             var header = CreateHeader(ContextCodeEnum.RegistrationContext, TypeCodeEnum.Register);
             byte[] msg = Encoding.UTF8.GetBytes("Register please");
-            byte[] newByte = ConcateBytes(header, msg, msg.Length+ header.Length+1);
+            byte[] newByte = ConcateBytes(header, msg);
             newByte[msg.Length + header.Length] = (byte)TypeCodeEnum.NullTerminator;
             return newByte;
         }
@@ -25,9 +25,9 @@ namespace Pokemonia.WebServer.Utils
             return data;
         }
 
-        public byte[] ConcateBytes(byte[] bytes, byte[] anotherBytes, long length)
+        public byte[] ConcateBytes(byte[] bytes, byte[] anotherBytes)
         {
-            byte[] newByte = new byte[length];
+            byte[] newByte = new byte[bytes.Length+anotherBytes.Length];
             uint index = 0;
             for(int i = 0; i < bytes.Length; i++)
             {

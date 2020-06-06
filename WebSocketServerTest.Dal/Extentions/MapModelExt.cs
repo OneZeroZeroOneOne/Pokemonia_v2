@@ -9,7 +9,6 @@ using Pokemonia.Dal.Queryes;
 using Npgsql;
 using Dapper;
 using System.Threading.Tasks;
-using Pokemonia.Dal.Queryes;
 using Pokemonia.Dal.Models;
 
 namespace Pokemonia.Dal.Extentions
