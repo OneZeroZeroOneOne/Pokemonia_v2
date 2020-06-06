@@ -23,12 +23,23 @@ namespace Pokemonia.Dal
                 return new NpgsqlConnection(_connectionString);
             }
         }
-        async public Task<Map> GetMap(int mapId)
+        public Map GetMap(int mapId)
         {
             using (IDbConnection dbConnection = Connection)
             {
-                return await dbConnection.GetMap(mapId);
+                return dbConnection.GetMap(mapId);
             }
         }
+        public User GetUser(string login)
+        {
+            using (IDbConnection dbConnection = Connection)
+            {
+                return dbConnection.GetUser(login);
+            }
+        }
+
+
+
+
     }
 }

@@ -32,9 +32,8 @@ namespace Pokemonia.WebServer
 
                     // Программа приостанавливается, ожидая входящее соединение
                     Socket handler = sListener.Accept();
-
                     //Thread userSocketConn = new Thread();
-                    Dispatcher d = new Dispatcher(handler);
+                    Dispatcher d = new Dispatcher(new UserConnection(handler));
 
                     handler.Shutdown(SocketShutdown.Both);
                     handler.Close();

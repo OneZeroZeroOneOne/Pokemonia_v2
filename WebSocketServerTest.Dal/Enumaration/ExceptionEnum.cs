@@ -4,9 +4,7 @@ using System.Text;
 
 namespace Pokemonia.Dal.Enumaration
 {
-    public enum TypeCodeEnum : byte
+    class ExceptionEnum
     {
-        Login = 0x12,
-
     }
 }

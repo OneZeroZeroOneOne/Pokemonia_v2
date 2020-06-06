@@ -3,24 +3,21 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Text;
-//using Pokemonia.Dal.Maps;
-//using Pokemonia.Dal.Maps.MapsObjects;
 using Pokemonia.Dal.Queryes;
 using Npgsql;
 using Dapper;
-using System.Threading.Tasks;
 using Pokemonia.Dal.Models;
 
 namespace Pokemonia.Dal.Extentions
 {
     public static class MapModelExt
     {
-        async public static Task<Map> GetMap(this IDbConnection dbConnection, int mapId)
+        public static Map GetMap(this IDbConnection dbConnection, int mapId)
         {
             Map returnedMap = null;
             string GetMapQuery = String.Format(QueryMap.GetMap, mapId);
-            await dbConnection
-                .QueryAsync<Map, MapDecoration, Map>(GetMapQuery, (map, dec) =>
+            dbConnection
+                .Query<Map, MapDecoration, Map>(GetMapQuery, (map, dec) =>
                 {
                     if (returnedMap == null)
                     {

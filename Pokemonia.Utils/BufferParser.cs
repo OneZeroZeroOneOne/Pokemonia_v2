@@ -9,7 +9,6 @@ namespace Pokemonia.Utils
     {
         public byte[] _bytes;
         public int _index;
-
         public void Set(byte[] bytes)
         {
             _bytes = bytes;
@@ -31,6 +30,11 @@ namespace Pokemonia.Utils
             }
             _index += 1;
             return Encoding.UTF8.GetString(strList.ToArray());
+        }
+
+        public byte GetByte()
+        {
+            return _bytes[_index++];
         }
 
     }

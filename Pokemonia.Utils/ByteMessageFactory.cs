@@ -8,12 +8,12 @@ namespace Pokemonia.Utils
 {
     public class ByteMessageFactory
     {
-        public byte[] RegisterBytes()
+        public byte[] LoginBytes()
         {
-            var header = CreateHeader(ContextCodeEnum.RegistrationContext, TypeCodeEnum.Register);
+            var header = CreateHeader(ContextCodeEnum.Login, TypeCodeEnum.Login);
             byte[] msg = Encoding.UTF8.GetBytes("Register please");
             byte[] newByte = ConcateBytes(header, msg);
-            newByte[msg.Length + header.Length] = (byte)TypeCodeEnum.NullTerminator;
+            newByte[msg.Length + header.Length] = 0x0;
             return newByte;
         }
 
