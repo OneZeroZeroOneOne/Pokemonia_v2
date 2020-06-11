@@ -8,14 +8,20 @@ namespace Pokemonia.Utils
 {
     public class ByteMessageFactory
     {
-        public byte[] LoginBytes()
+        public byte[] LoginPlease()
         {
-            var header = CreateHeader(ContextCodeEnum.Login, TypeCodeEnum.Login);
-            byte[] msg = Encoding.UTF8.GetBytes("Register please");
-            byte[] newByte = ConcateBytes(header, msg);
-            newByte[msg.Length + header.Length] = 0x0;
+            var header = CreateHeader(ContextCodeEnum.Login, TypeCodeEnum.LoginPlease);
+            byte[] newByte = AddString(header, "Register please");
             return newByte;
         }
+
+        public byte[] SuccesLogin()
+        {
+            var header = CreateHeader(ContextCodeEnum.Login, TypeCodeEnum.LoginSucces);
+            byte[] newByte = AddString(header, "login succes");
+            return newByte;
+        }
+
 
         public byte[] CreateHeader(ContextCodeEnum context, TypeCodeEnum tp)
         {
@@ -27,6 +33,8 @@ namespace Pokemonia.Utils
 
         public byte[] ConcateBytes(byte[] bytes, byte[] anotherBytes)
         {
+            Console.WriteLine($"byte L {bytes.Length}") ;
+            Console.WriteLine($"anotherBytes L {anotherBytes.Length}");
             byte[] newByte = new byte[bytes.Length+anotherBytes.Length];
             uint index = 0;
             for(int i = 0; i < bytes.Length; i++)
@@ -37,7 +45,27 @@ namespace Pokemonia.Utils
             {
                 newByte[index++] = anotherBytes[i];
             }
+            Console.WriteLine($"newbyte L {newByte.Length}");
             return newByte;
         }
+
+        public byte[] AddString(byte[] bytes, string str)
+        {
+            byte[] strBytes = Encoding.UTF8.GetBytes(str);
+            byte[] newBytes = new byte[bytes.Length + strBytes.Length + 1];
+            uint index = 0;
+            for (int i = 0; i < bytes.Length; i++)
+            {
+                newBytes[index++] = bytes[i];
+            }
+            for (int i = 0; i < strBytes.Length; i++)
+            {
+                newBytes[index++] = strBytes[i];
+            }
+            newBytes[bytes.Length + strBytes.Length] = 0x0;
+            return newBytes;
+        }
+
+
     }
 }

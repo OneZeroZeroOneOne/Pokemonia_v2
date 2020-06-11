@@ -11,7 +11,7 @@ namespace Pokemonia.Dal
 {
     public class DBWorker
     {
-        private string _connectionString = "Host=194.99.21.140;Database=postgres;Username=postgres;Password=werdwerd2012";
+        private string _connectionString = "Host=194.99.21.140;Database=pokemonia;Username=postgres;Password=werdwerd2012";
         public DBWorker()
         {
 

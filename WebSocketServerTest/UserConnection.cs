@@ -1,4 +1,5 @@
 ﻿using Pokemonia.Dal.Models;
+using Pokemonia.Utils.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
@@ -17,16 +18,29 @@ namespace Pokemonia.WebServer
 
         public byte[] Receive()
         {
-            byte[] bytes = new byte[4096];
-            int bytesRec = _header.Receive(bytes);
-            return bytes;
+            try
+            {
+                byte[] bytes = new byte[4096];
+                int bytesRec = _header.Receive(bytes);
+                return bytes;
+            }
+            catch(Exception e)
+            {
+                throw ExceptionFactory.SoftException(ExceptionEnum.ConnectWasClosed, e.Message);
+            }
         }
 
         public void Send(byte[] bytes)
         {
-            _header.Send(bytes);
+            try
+            {
+                _header.Send(bytes);
+            }
+            catch (Exception e)
+            {
+                throw ExceptionFactory.SoftException(ExceptionEnum.ConnectWasClosed, e.Message);
+            }
         }
-
         public void SetUser(User user)
         {
             _user = user;

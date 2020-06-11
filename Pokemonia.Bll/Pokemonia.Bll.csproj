@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Pokemonia.Utils\Pokemonia.Utils.csproj" />
     <ProjectReference Include="..\WebSocketServerTest.Dal\Pokemonia.Dal.csproj" />
   </ItemGroup>
 

@@ -13,7 +13,12 @@ namespace Pokemonia.WebServer.Handlers
         }
         public void SendAuthorizePlease()
         {
-            _userConnection.Send(_byteMessageFactory.LoginBytes());
+            _userConnection.Send(_byteMessageFactory.LoginPlease());
+        }
+
+        public void SendSuccesAuthorize()
+        {
+            _userConnection.Send(_byteMessageFactory.SuccesLogin());
         }
     }
 }

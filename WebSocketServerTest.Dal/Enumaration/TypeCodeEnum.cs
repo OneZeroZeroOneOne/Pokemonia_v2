@@ -6,7 +6,8 @@ namespace Pokemonia.Dal.Enumaration
 {
     public enum TypeCodeEnum : byte
     {
-        Login = 0x12,
-
+        LoginPlease = 0x12,
+        LoginSucces = 0x13,
+        LoginАttempt = 0x14,
     }
 }
