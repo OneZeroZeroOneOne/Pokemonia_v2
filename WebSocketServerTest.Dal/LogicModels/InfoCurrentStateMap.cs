@@ -10,7 +10,7 @@ namespace Pokemonia.Dal.LogicModels
         private Map Map { get; set; }
         public Dictionary<long, User> Users { get; set; }
         public Dictionary<long, Coordinates<User>> UsersCoordinates { get; set; }
-        public Dictionary<Guid, TemporaryObjectPokemon> Monsters { get; set; }
-        public Dictionary<Guid, Coordinates<TemporaryObjectPokemon>> MonstersCoordinates { get; set; }
+        public Dictionary<Guid, Monster> Monsters { get; set; }
+        public Dictionary<Guid, Coordinates<Monster>> MonstersCoordinates { get; set; }
     }
 }

@@ -11,6 +11,6 @@ namespace Pokemonia.Dal.LogicModels
         public BlockingCollection<Coordinates<User>> usersMoveCoordinates;
         public BlockingCollection<User> users;
         public BlockingCollection<InfoCurrentStateMap> outInfoCurrentStateMap;
-        public BlockingCollection<TemporaryObjectPokemon> killMonsters;
+        public BlockingCollection<Monster> killMonsters;
     }
 }

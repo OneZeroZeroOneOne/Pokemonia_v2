@@ -16,7 +16,7 @@ namespace Pokemonia.MapEngine2D
         //map
         private MapServiceDB _mapServiceDB;
         private Map _map;
-        private BlockingCollection<InfoCurrentStateMap> _outInfoCurrentStateMapBlockingCollection;
+        private BlockingCollection<InfoCurrentStateMap> _outInfoCurrentStateMap;
         private int _spawnX;
         private int _spawnY;
 
@@ -28,13 +28,13 @@ namespace Pokemonia.MapEngine2D
         private BlockingCollection<Coordinates<User>> _usersMoveCoordinatesBlockingCollection;
 
         //monsters
-        private Dictionary<Guid, TemporaryObjectPokemon> _monsters = new Dictionary<Guid, TemporaryObjectPokemon>();
-        private Dictionary<Guid, Coordinates<TemporaryObjectPokemon>> _monstersCoordinates = new Dictionary<Guid, Coordinates<TemporaryObjectPokemon>>();
-        private Dictionary<Guid, Coordinates<TemporaryObjectPokemon>> _monstersMoveCoordinates = new Dictionary<Guid, Coordinates<TemporaryObjectPokemon>>();
-        private BlockingCollection<TemporaryObjectPokemon> _killMonsterBlockingCollection;
+        private Dictionary<Guid, Monster> _monsters = new Dictionary<Guid, Monster>();
+        private Dictionary<Guid, Coordinates<Monster>> _monstersCoordinates = new Dictionary<Guid, Coordinates<Monster>>();
+        private Dictionary<Guid, Coordinates<Monster>> _monstersMoveCoordinates = new Dictionary<Guid, Coordinates<Monster>>();
+        private BlockingCollection<Monster> _killMonsterBlockingCollection;
         public MapEngine(Map map, BlockingCollection<User> usersBlockingCollection
                                                         , BlockingCollection<Coordinates<User>> usersMoveCoordinatesBlockingCollection
-                                                        , BlockingCollection<TemporaryObjectPokemon> killMonsterBlockingCollection
+                                                        , BlockingCollection<Monster> killMonsterBlockingCollection
                                                         , BlockingCollection<InfoCurrentStateMap> outInfoBlockingCollection)
         {
             _map = map;
@@ -43,15 +43,15 @@ namespace Pokemonia.MapEngine2D
             _usersBlockingCollection = usersBlockingCollection;
             _usersMoveCoordinatesBlockingCollection = usersMoveCoordinatesBlockingCollection;
             _killMonsterBlockingCollection = killMonsterBlockingCollection;
-            _outInfoCurrentStateMapBlockingCollection = outInfoBlockingCollection;
+            _outInfoCurrentStateMap = outInfoBlockingCollection;
             _random = new Random();
             _mapServiceDB = new MapServiceDB();
             User user1 = new User() { Id = 1, Name = "Dima" };
             _users.Add(1, user1);
             _usersCoordinates.Add(1, new Coordinates<User>() { Model = user1, x = _spawnX, y = _spawnY });
             Guid mId1 = Guid.NewGuid();
-            _monsters.Add(mId1, new TemporaryObjectPokemon() { Id = mId1, Name = "Pidrilo" });
-            _monstersCoordinates.Add(mId1, new Coordinates<TemporaryObjectPokemon>() { x = _spawnX, y = _spawnY });
+            _monsters.Add(mId1, new Monster() { Id = mId1, Name = "Pidrilo" });
+            _monstersCoordinates.Add(mId1, new Coordinates<Monster>() { x = _spawnX, y = _spawnY });
         }
 
         public void Run()
@@ -62,7 +62,7 @@ namespace Pokemonia.MapEngine2D
                 try
                 {
                     User[] users = _usersBlockingCollection.ToArray();
-                    for(int i = 0; i<users.Length; i++)
+                    for (int i = 0; i<users.Length; i++)
                     {
                         _users.Add(users[i].Id, users[i]);
                         Console.WriteLine($"added user name {users[i].Name}");
@@ -106,33 +106,35 @@ namespace Pokemonia.MapEngine2D
         {
             foreach(var monsterCoord in _monstersCoordinates)
             {
-                Coordinates<TemporaryObjectPokemon> moveMonsterCoord;
+                Coordinates<Monster> moveMonsterCoord;
                 
                 if (!_monstersMoveCoordinates.TryGetValue(monsterCoord.Key, out moveMonsterCoord))
                 {
                     //генерим новую точку и считаем переменные направления
 
-                    Coordinates<TemporaryObjectPokemon> moveCoord = new Coordinates<TemporaryObjectPokemon>();
+                    Coordinates<Monster> moveCoord = new Coordinates<Monster>();
 
                     CalculateCoordinates.GenerateNewMoveCoord(monsterCoord.Value, moveCoord, _map.Width, _map.Height);
                     _monstersMoveCoordinates.Add(monsterCoord.Key, moveCoord);
                 }
                 else
                 {
-                    //ходим монстром
-                    CalculateCoordinates.CalculatePosition(monsterCoord.Value, moveMonsterCoord, _map.MoveDistance);
-                    if(CalculateCoordinates.CheckBorder(monsterCoord.Value, moveMonsterCoord))
+                    if (DateTime.Now > monsterCoord.Value.TimeOffset)
                     {
-                        CalculateCoordinates.GenerateNewMoveCoord(monsterCoord.Value, moveMonsterCoord, _map.Width, _map.Height);
+                        CalculateCoordinates.CalculatePosition(monsterCoord.Value, moveMonsterCoord, _map.MoveDistance);
+                        if (CalculateCoordinates.CheckBorder(monsterCoord.Value, moveMonsterCoord))
+                        {
+                            CalculateCoordinates.GenerateNewMoveCoord(monsterCoord.Value, moveMonsterCoord, _map.Width, _map.Height);
+                        }
+                        Console.WriteLine($"Mapid - {_map.Id} Monster {_monsters.GetValueOrDefault(monsterCoord.Key).Name} coord x - {monsterCoord.Value.x}, y - {monsterCoord.Value.y}");
                     }
-                    Console.WriteLine($"Mapid - {_map.Id} Monster {_monsters.GetValueOrDefault(monsterCoord.Key).Name} coord x - {monsterCoord.Value.x}, y - {monsterCoord.Value.y}");
                 }
 
             }
         }
         private void KillMonsters()
         {
-            TemporaryObjectPokemon[] DeadMonsters = _killMonsterBlockingCollection.ToArray();
+            Monster[] DeadMonsters = _killMonsterBlockingCollection.ToArray();
             for(int i = 0; i < DeadMonsters.Length; i++)
             {
                 _monsters.Remove(DeadMonsters[i].Id);
@@ -145,17 +147,17 @@ namespace Pokemonia.MapEngine2D
         {
             if(_monsters.Count < _map.MonstersQuantity)
             {
-                /*for(int i = 0; i< _map.MonstersQuantity - _monsters.Count; i++)
+                for(int i = 0; i< _map.MonstersQuantity - _monsters.Count; i++)
                 {
                     Console.WriteLine("spawning monster");
                     Guid mId = Guid.NewGuid();
-                    _monsters.Add(mId, new TemporaryObjectPokemon() { Id = mId, Name = "Debs" });
-                    _monstersCoordinates.Add(mId, new Coordinates<TemporaryObjectPokemon>()
+                    _monsters.Add(mId, new Monster() { Id = mId, Name = "Debs" });
+                    _monstersCoordinates.Add(mId, new Coordinates<Monster>()
                     {
                         x = _random.Next(0, _map.Width),
                         y = _random.Next(0, _map.Height)
                     });
-                }*/
+                }
             }
         }
 

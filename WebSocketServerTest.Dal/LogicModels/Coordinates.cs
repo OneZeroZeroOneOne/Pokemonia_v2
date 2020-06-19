@@ -15,6 +15,7 @@ namespace Pokemonia.Dal.LogicModels
         public double CoefY { get; set; }
         public int SignX { get; set; }
         public int SignY { get; set; }
+        public DateTime TimeOffset { get; set; }
 
 
     }

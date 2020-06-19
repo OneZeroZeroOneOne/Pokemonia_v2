@@ -29,7 +29,7 @@ namespace Pokemonia.MapEngine2D
                     users = new BlockingCollection<User>(),
                     usersMoveCoordinates = new BlockingCollection<Coordinates<User>>(),
                     outInfoCurrentStateMap = new BlockingCollection<InfoCurrentStateMap>(),
-                    killMonsters = new BlockingCollection<TemporaryObjectPokemon>(),
+                    killMonsters = new BlockingCollection<Monster>(),
                 };
                 collections.Add(map.Value.Id, mapDataHolder);
                 MapEngine mapEnjine = new MapEngine(map.Value, mapDataHolder.users, 

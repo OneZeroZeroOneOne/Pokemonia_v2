@@ -24,7 +24,9 @@ namespace Pokemonia.Utils
             
             coordinates.x += (moveCoordinates.CoefX * distance) * moveCoordinates.SignX;
             coordinates.y += (moveCoordinates.CoefY * distance) * moveCoordinates.SignY;
-            
+            DateTime now = DateTime.Now;
+            coordinates.TimeOffset = DateTime.Now.AddSeconds(1);
+
         }
 
         public static bool CheckBorder<T>(Coordinates<T> coordinates, Coordinates<T> moveCoordinates)
@@ -56,6 +58,7 @@ namespace Pokemonia.Utils
             Random random = new Random();
             newMoveCoordinates.x = random.Next(0, maxX);
             newMoveCoordinates.y = random.Next(0, maxY);
+            coordinates.TimeOffset = DateTime.Now.AddSeconds(1);
             CalculateCoef(newMoveCoordinates, coordinates);
         }
     }
