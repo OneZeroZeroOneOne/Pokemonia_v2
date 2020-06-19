@@ -10,9 +10,8 @@ namespace Pokemonia.WebServer.Handlers
         protected UserConnection _userConnection;
         protected BufferParser _bufferParser;
         protected ByteMessageFactory _byteMessageFactory;
-        public BaseHandler(UserConnection userConnection)
+        public BaseHandler()
         {
-            _userConnection = userConnection;
             _bufferParser = new BufferParser();
             _byteMessageFactory = new ByteMessageFactory();
 

@@ -6,6 +6,7 @@ using Pokemonia.Dal.Models;
 using Pokemonia.Dal.Queryes;
 using Pokemonia.Dal.Extentions;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace Pokemonia.Dal
 {
@@ -30,6 +31,15 @@ namespace Pokemonia.Dal
                 return dbConnection.GetMap(mapId);
             }
         }
+
+        public Dictionary<int, Map> GetAllMaps()
+        {
+            using (IDbConnection dbConnection = Connection)
+            {
+                return dbConnection.GetAllMaps();
+            }
+        }
+
         public User GetUser(string login)
         {
             using (IDbConnection dbConnection = Connection)

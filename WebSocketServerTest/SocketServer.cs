@@ -23,7 +23,7 @@ namespace Pokemonia.WebServer
             try
             {
                 sListener.Bind(ipEndPoint);
-                sListener.Listen(10);
+                sListener.Listen(100);
 
                 // Начинаем слушать соединения
                 while (true)

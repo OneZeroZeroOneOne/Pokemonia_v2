@@ -32,6 +32,28 @@ namespace Pokemonia.Dal.Extentions
             Console.WriteLine(returnedMap.MapDecoration);
             return returnedMap;
         }
+
+        public static Dictionary<int, Map> GetAllMaps(this IDbConnection dbConnection)
+        {
+            Dictionary<int, Map> returnedMaps = new Dictionary<int, Map>();
+            dbConnection
+                .Query<Map, MapDecoration, Map>(QueryMap.GetAllMaps, (map, dec) =>
+                {
+                    Map mapEntry;
+                    if (!returnedMaps.TryGetValue(map.Id, out mapEntry))
+                    {
+                        Console.WriteLine(map.Id);
+                        Console.WriteLine(dec.Id);
+                        mapEntry = map;
+                        mapEntry.MapDecoration = new List<MapDecoration>();
+                        returnedMaps.Add(mapEntry.Id, mapEntry);
+                    };
+                    mapEntry.MapDecoration.Add(dec);
+                    return mapEntry;
+                }, splitOn: "Id");
+
+            return returnedMaps;
+        }
     }
         
 }

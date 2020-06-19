@@ -7,9 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pokemonia.WebServer", "WebS
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pokemonia.Dal", "WebSocketServerTest.Dal\Pokemonia.Dal.csproj", "{8AA1A30E-2F8C-4DC3-933B-2D58F0655A38}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pokemonia.Bll", "Pokemonia.Bll\Pokemonia.Bll.csproj", "{EC6359EE-1B3C-4BB9-A84E-C295EE30097D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pokemonia.Bll", "Pokemonia.Bll\Pokemonia.Bll.csproj", "{EC6359EE-1B3C-4BB9-A84E-C295EE30097D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pokemonia.Utils", "Pokemonia.Utils\Pokemonia.Utils.csproj", "{E7D09426-9D9C-4D3D-AA87-BE9E80DE441E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pokemonia.Utils", "Pokemonia.Utils\Pokemonia.Utils.csproj", "{E7D09426-9D9C-4D3D-AA87-BE9E80DE441E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pokemonia.MapEngine2D", "Pokemonia.MapEngine2D\Pokemonia.MapEngine2D.csproj", "{6E10A0BE-4CEB-423E-BA76-2E3EEE5860B0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{E7D09426-9D9C-4D3D-AA87-BE9E80DE441E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E7D09426-9D9C-4D3D-AA87-BE9E80DE441E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E7D09426-9D9C-4D3D-AA87-BE9E80DE441E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E10A0BE-4CEB-423E-BA76-2E3EEE5860B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E10A0BE-4CEB-423E-BA76-2E3EEE5860B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E10A0BE-4CEB-423E-BA76-2E3EEE5860B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E10A0BE-4CEB-423E-BA76-2E3EEE5860B0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

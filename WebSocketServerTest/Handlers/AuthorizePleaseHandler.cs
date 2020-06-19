@@ -8,17 +8,19 @@ namespace Pokemonia.WebServer.Handlers
 {
     public class AuthorizePleaseHandler : BaseHandler
     {
-        public AuthorizePleaseHandler(UserConnection userConnection) : base(userConnection)
+        public AuthorizePleaseHandler()
         {
         }
-        public void SendAuthorizePlease()
+        public void SendAuthorizePlease(UserConnection userConnection)
         {
-            _userConnection.Send(_byteMessageFactory.LoginPlease());
+            userConnection.Send(_byteMessageFactory.LoginPlease());
         }
 
-        public void SendSuccesAuthorize()
+        public void SendSuccesAuthorize(UserConnection userConnection)
         {
-            _userConnection.Send(_byteMessageFactory.SuccesLogin());
+            userConnection.Send(_byteMessageFactory.SuccesLogin());
         }
+
+
     }
 }
