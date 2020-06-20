@@ -24,7 +24,6 @@ namespace Pokemonia.Utils
             
             coordinates.x += (moveCoordinates.CoefX * distance) * moveCoordinates.SignX;
             coordinates.y += (moveCoordinates.CoefY * distance) * moveCoordinates.SignY;
-            DateTime now = DateTime.Now;
             coordinates.TimeOffset = DateTime.Now.AddSeconds(1);
 
         }

@@ -12,19 +12,18 @@ namespace Pokemonia.WebServer
     public class Dispatcher
     {
         private UserConnection _userConnection;
-        private AuthorizePleaseHandler _authorizePleaseHandler;
+        private AuthorizeHandler _authorizePleaseHandler;
         private BufferParser _bufferParser;
         private UserServiceDB _userServiceDB;
         public Dispatcher(UserConnection userConnection)
         {
             _bufferParser = new BufferParser();
             _userConnection = userConnection;
-            _authorizePleaseHandler = new AuthorizePleaseHandler();
+            _authorizePleaseHandler = new AuthorizeHandler();
             _userServiceDB = new UserServiceDB();
-            Run();
         }
 
-        private void Run()
+        public void Run()
         {
             while(_userConnection.GetUser() == null)
             {

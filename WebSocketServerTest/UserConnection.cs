@@ -11,6 +11,7 @@ namespace Pokemonia.WebServer
     {
         private Socket _header;
         private User _user;
+        private int _mapId;
         public UserConnection(Socket header)
         {
             _header = header;
@@ -49,6 +50,16 @@ namespace Pokemonia.WebServer
         public User GetUser()
         {
             return _user;
+        }
+
+        public void SetMapId(int mapId)
+        {
+            _mapId = mapId;
+        }
+
+        public int GetMapId()
+        {
+            return _mapId;
         }
 
     }

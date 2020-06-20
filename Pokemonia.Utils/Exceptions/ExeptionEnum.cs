@@ -27,5 +27,6 @@ namespace Pokemonia.Utils.Exceptions
         GlobalSettingNotFound = 19,
         SomethingWentWrong = 20,
         ConnectWasClosed = 21,
+        MapNotFound = 22,
     }
 }

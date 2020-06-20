@@ -16,7 +16,7 @@ namespace Pokemonia.MapEngine2D
         //map
         private MapServiceDB _mapServiceDB;
         private Map _map;
-        private BlockingCollection<InfoCurrentStateMap> _outInfoCurrentStateMap;
+        private InfoCurrentStateMap _outInfoCurrentStateMap;
         private int _spawnX;
         private int _spawnY;
 
@@ -24,34 +24,27 @@ namespace Pokemonia.MapEngine2D
         private Dictionary<long, User> _users = new Dictionary<long, User>();
         private Dictionary<long, Coordinates<User>> _usersCoordinates = new Dictionary<long, Coordinates<User>>();
         private Dictionary<long, Coordinates<User>> _usersMoveCoordinates = new Dictionary<long, Coordinates<User>>();
-        private BlockingCollection<User> _usersBlockingCollection;
-        private BlockingCollection<Coordinates<User>> _usersMoveCoordinatesBlockingCollection;
+        private List<User> _usersOut;
+        private List<Coordinates<User>> _usersMoveCoordinatesOut;
+        private List<User> _disconnectUserOut;
 
         //monsters
         private Dictionary<Guid, Monster> _monsters = new Dictionary<Guid, Monster>();
         private Dictionary<Guid, Coordinates<Monster>> _monstersCoordinates = new Dictionary<Guid, Coordinates<Monster>>();
         private Dictionary<Guid, Coordinates<Monster>> _monstersMoveCoordinates = new Dictionary<Guid, Coordinates<Monster>>();
-        private BlockingCollection<Monster> _killMonsterBlockingCollection;
-        public MapEngine(Map map, BlockingCollection<User> usersBlockingCollection
-                                                        , BlockingCollection<Coordinates<User>> usersMoveCoordinatesBlockingCollection
-                                                        , BlockingCollection<Monster> killMonsterBlockingCollection
-                                                        , BlockingCollection<InfoCurrentStateMap> outInfoBlockingCollection)
+        private List<Monster> _killMonstersOut;
+        public MapEngine(Map map, MapDataHolder mapDataHolder)
         {
             _map = map;
             _spawnX = 400;
             _spawnY = 300;
-            _usersBlockingCollection = usersBlockingCollection;
-            _usersMoveCoordinatesBlockingCollection = usersMoveCoordinatesBlockingCollection;
-            _killMonsterBlockingCollection = killMonsterBlockingCollection;
-            _outInfoCurrentStateMap = outInfoBlockingCollection;
+            _usersOut = mapDataHolder.users;
+            _usersMoveCoordinatesOut = mapDataHolder.usersMoveCoordinates;
+            _killMonstersOut = mapDataHolder.killMonsters;
+            _outInfoCurrentStateMap = mapDataHolder.outInfoCurrentStateMap;
+            _disconnectUserOut = mapDataHolder.disconnectUser;
             _random = new Random();
             _mapServiceDB = new MapServiceDB();
-            User user1 = new User() { Id = 1, Name = "Dima" };
-            _users.Add(1, user1);
-            _usersCoordinates.Add(1, new Coordinates<User>() { Model = user1, x = _spawnX, y = _spawnY });
-            Guid mId1 = Guid.NewGuid();
-            _monsters.Add(mId1, new Monster() { Id = mId1, Name = "Pidrilo" });
-            _monstersCoordinates.Add(mId1, new Coordinates<Monster>() { x = _spawnX, y = _spawnY });
         }
 
         public void Run()
@@ -61,42 +54,59 @@ namespace Pokemonia.MapEngine2D
             {
                 try
                 {
-                    User[] users = _usersBlockingCollection.ToArray();
-                    for (int i = 0; i<users.Length; i++)
-                    {
-                        _users.Add(users[i].Id, users[i]);
-                        Console.WriteLine($"added user name {users[i].Name}");
-                        _usersCoordinates.Add(users[i].Id, new Coordinates<User>() { Model = users[i], x = _spawnX, y = _spawnY });
-                    }
-                    Coordinates<User>[] moveCoordinates = _usersMoveCoordinatesBlockingCollection.ToArray();
-                    for (int i = 0; i < moveCoordinates.Length; i++)
-                    {
-                        if(_users.TryGetValue(moveCoordinates[i].Model.Id, out User user))
-                        {
-                            CalculateCoordinates.CalculateCoef(moveCoordinates[i],
-                                _usersCoordinates.GetValueOrDefault(user.Id));
-                            _usersMoveCoordinates.Add(user.Id, moveCoordinates[i]);
-                        }
-                    }
-                    MoveUserObjects();
+                    GetUsers();
+                    MoveUser();
                     MoveMonsterObjects();
                     KillMonsters();
                     SpawnMonsters();
+                    DisconnectUser();
                 }
                 catch (InvalidOperationException) { }
 
             }
         }
 
-        private void MoveUserObjects()
+        private void GetUsers()
         {
-            foreach (var userMoveCoord in _usersMoveCoordinates)
+            User[] users = _usersOut.ToArray();
+            _usersOut.Clear();
+            for(int i = 0; i < users.Length; i++)
             {
-                if (_users.TryGetValue(userMoveCoord.Key, out User user))
+                _users.Add(users[i].Id, users[i]);
+                _usersCoordinates.Add(users[i].Id, new Coordinates<User>()
                 {
-                    _usersCoordinates.TryGetValue(userMoveCoord.Key, out Coordinates<User> userCoord);
+                    x = _spawnX,
+                    y = _spawnY,
+                });
+                Console.WriteLine($"added user name {users[i].Name}");
+            }
+        }
+
+        private void MoveUser()
+        {
+            Coordinates<User>[] newMoveCoordinates = _usersMoveCoordinatesOut.ToArray();
+            _usersMoveCoordinatesOut.Clear();
+            for (int i = 0; i < newMoveCoordinates.Length; i++)
+            {
+                if(_users.ContainsKey(newMoveCoordinates[i].Model.Id))
+                {
+                    CalculateCoordinates.CalculateCoef(newMoveCoordinates[i],
+                        _usersCoordinates.GetValueOrDefault(newMoveCoordinates[i].Model.Id));
+                    if (_usersMoveCoordinates.ContainsKey(newMoveCoordinates[i].Model.Id))
+                    {
+                        _usersMoveCoordinates.Remove(newMoveCoordinates[i].Model.Id);
+                    }
+                    _usersMoveCoordinates.Add(newMoveCoordinates[i].Model.Id, newMoveCoordinates[i]);
+                }
+            }
+            foreach(var userMoveCoord in _usersMoveCoordinates)
+            {
+                var userCoord = _usersCoordinates.GetValueOrDefault(userMoveCoord.Key);
+                if (DateTime.Now > userCoord.TimeOffset)
+                {
                     CalculateCoordinates.CalculatePosition(userCoord, userMoveCoord.Value, _map.MoveDistance);
-                    Console.WriteLine($"user {user.Name} coord x - {_usersCoordinates.GetValueOrDefault(user.Id).x}, y {_usersCoordinates.GetValueOrDefault(user.Id).y}");
+                    CalculateCoordinates.CheckBorder(userCoord, userMoveCoord.Value);
+                    Console.WriteLine($"user {_users.GetValueOrDefault(userMoveCoord.Key).Name} coord x - {userCoord.x}, y {userCoord.y}");
                 }
             }
             
@@ -134,8 +144,9 @@ namespace Pokemonia.MapEngine2D
         }
         private void KillMonsters()
         {
-            Monster[] DeadMonsters = _killMonsterBlockingCollection.ToArray();
-            for(int i = 0; i < DeadMonsters.Length; i++)
+            Monster[] DeadMonsters = _killMonstersOut.ToArray();
+            _killMonstersOut.Clear();
+            for (int i = 0; i < DeadMonsters.Length; i++)
             {
                 _monsters.Remove(DeadMonsters[i].Id);
                 _monstersCoordinates.Remove(DeadMonsters[i].Id);
@@ -161,9 +172,16 @@ namespace Pokemonia.MapEngine2D
             }
         }
 
-
-
-
-
-    }
+        private void DisconnectUser()
+        {
+            User[] disconnectUsers = _disconnectUserOut.ToArray();
+            _disconnectUserOut.Clear();
+            for (int i = 0; i < disconnectUsers.Length; i++)
+            {
+                _users.Remove(disconnectUsers[i].Id);
+                _usersCoordinates.Remove(disconnectUsers[i].Id);
+                _usersMoveCoordinates.Remove(disconnectUsers[i].Id);
+            }
+        }
+    }   
 }

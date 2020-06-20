@@ -6,9 +6,9 @@ using System.Text;
 
 namespace Pokemonia.WebServer.Handlers
 {
-    public class AuthorizePleaseHandler : BaseHandler
+    public class AuthorizeHandler : BaseHandler
     {
-        public AuthorizePleaseHandler()
+        public AuthorizeHandler()
         {
         }
         public void SendAuthorizePlease(UserConnection userConnection)

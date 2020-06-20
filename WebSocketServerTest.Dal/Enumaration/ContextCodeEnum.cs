@@ -7,5 +7,6 @@ namespace Pokemonia.Dal.Enumaration
     public enum ContextCodeEnum : byte
     {
         Login = 0x1,
+        User = 0x2,
     }
 }

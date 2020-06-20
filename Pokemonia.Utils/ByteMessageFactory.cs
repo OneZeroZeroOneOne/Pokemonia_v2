@@ -22,6 +22,29 @@ namespace Pokemonia.Utils
             return newByte;
         }
 
+        public byte[] AddedUser()
+        {
+            var header = CreateHeader(ContextCodeEnum.User, TypeCodeEnum.UserAddedOnMap);
+            byte[] newByte = AddString(header, "User added on map");
+            return newByte;
+        }
+
+        public byte[] DisconnectUserFromMap(int mapId)
+        {
+            var header = CreateHeader(ContextCodeEnum.User, TypeCodeEnum.DisconnectUserFromMap);
+            byte[] newByte = AddString(header, $"User was disconnect from map, Id - {mapId}");
+            return newByte;
+        }
+
+        public byte[] ChangeMap(int mapId)
+        {
+            var header = CreateHeader(ContextCodeEnum.User, TypeCodeEnum.UserChangeMap);
+            byte[] newByte = AddString(header, $"User changed map, Id - {mapId}");
+            return newByte;
+        }
+
+
+
 
         public byte[] CreateHeader(ContextCodeEnum context, TypeCodeEnum tp)
         {

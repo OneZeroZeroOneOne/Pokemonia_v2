@@ -11,7 +11,7 @@ namespace Pokemonia.Bll.Services
             User user = _dbWorker.GetUser(login);
             if(user == null)
             {
-                throw new Exception();
+                ExceptionFactory.SoftException(ExceptionEnum.UserNotFound, "User not found");
             }
             if(user.Password != password)
             {

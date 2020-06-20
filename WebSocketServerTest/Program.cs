@@ -12,8 +12,8 @@ namespace Pokemonia.WebServer
         static void Main(string[] args)
         {
             MapEngineGenerator mapEngineGenerator = new MapEngineGenerator();
-            Dictionary<int, MapDataHolder> collections = mapEngineGenerator.RunMapsEngine();
-            SocketServer server = new SocketServer();
+            mapEngineGenerator.RunMapsEngine();
+            SocketServer server = new SocketServer(mapEngineGenerator.GetCollections());
         }
     }
 }

@@ -8,9 +8,10 @@ namespace Pokemonia.Dal.LogicModels
 {
     public struct MapDataHolder
     {
-        public BlockingCollection<Coordinates<User>> usersMoveCoordinates;
-        public BlockingCollection<User> users;
-        public BlockingCollection<InfoCurrentStateMap> outInfoCurrentStateMap;
-        public BlockingCollection<Monster> killMonsters;
+        public List<Coordinates<User>> usersMoveCoordinates;
+        public List<User> users;
+        public InfoCurrentStateMap outInfoCurrentStateMap;
+        public List<Monster> killMonsters;
+        public List<User> disconnectUser;
     }
 }
